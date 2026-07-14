@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
 <title>Grade Evaluator Dashboard | Arellano University</title>
 <style>
   :root{
@@ -30,6 +32,10 @@
     max-width: 960px;
     margin: 0 auto;
     padding: 0 20px;
+  }
+
+  html{
+    -webkit-text-size-adjust: 100%;
   }
 
   .header-gradient{
@@ -151,10 +157,12 @@
     border-radius: 14px;
     border: 1.5px solid var(--border-soft);
     background: var(--field-bg);
-    font-size: 14px;
+    font-size: 16px;
     color: var(--text-dark);
     outline: none;
     transition: border-color 0.15s ease, background 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   input[type="text"]:focus{
@@ -311,6 +319,79 @@
   @media (max-width: 800px){
     .cards-wrap{
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px){
+    body{
+      padding-bottom: 40px;
+    }
+
+    .page{
+      padding: 0 14px;
+    }
+
+    .header-gradient{
+      padding: 28px 18px 26px;
+      border-radius: 0 0 22px 22px;
+      margin-bottom: 18px;
+    }
+
+    .crest{
+      width: 56px;
+      height: 56px;
+      margin-bottom: 12px;
+    }
+
+    .crest svg{
+      width: 28px;
+      height: 28px;
+    }
+
+    .school-name{
+      font-size: 17px;
+    }
+
+    .school-sub{
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      margin: 4px 0 14px;
+    }
+
+    .dashboard-title{
+      font-size: 15px;
+    }
+
+    .dashboard-sub{
+      font-size: 12px;
+    }
+
+    .cards-wrap{
+      gap: 14px;
+    }
+
+    .card{
+      padding: 18px 16px;
+      border-radius: 16px;
+    }
+
+    .card-title{
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    button{
+      padding: 15px 0;
+      font-size: 14px;
+    }
+
+    .progress-center svg{
+      width: 112px;
+      height: 112px;
+    }
+
+    .progress-value{
+      font-size: 19px;
     }
   }
 </style>
