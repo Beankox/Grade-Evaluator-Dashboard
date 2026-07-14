@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Grade Evaluator Dashboard | Arellano University</title>
+<style>
+  :root{
+    --navy: #1e3a8a;
+    --navy-dark: #16296b;
+    --accent: #2563eb;
+    --accent-light: #60a5fa;
+    --card-bg: #ffffff;
+    --field-bg: #f4f7fd;
+    --text-dark: #16296b;
+    --text-muted: #7286ad;
+    --border-soft: #e3ebfa;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background: #eef3fc;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    padding: 0 0 60px;
+  }
+
+  .page{
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .header-gradient{
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #60a5fa 100%);
+    border-radius: 0 0 28px 28px;
+    padding: 40px 24px 34px;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(30, 58, 138, 0.25);
+    margin-bottom: 28px;
+  }
+
+  .crest{
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: #ffffff;
+    margin: 0 auto 16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .crest svg{
+    width: 32px;
+    height: 32px;
+  }
+
+  .school-name{
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+
+  .school-sub{
+    color: #dbe8fd;
+    font-size: 11.5px;
+    letter-spacing: 2px;
+    margin: 4px 0 18px;
+    font-weight: 600;
+  }
+
+  .dashboard-title{
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin: 0 0 4px;
+  }
+
+  .dashboard-sub{
+    color: #cfe0fb;
+    font-size: 12.5px;
+    margin: 0;
+  }
+
+  .cards-wrap{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  .card{
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08);
+    padding: 24px 22px;
+  }
+
+  .card-title{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 20px;
+  }
+
+  .card-title .icon-badge{
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: var(--field-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .card-title svg{
+    width: 16px;
+    height: 16px;
+    stroke: var(--accent);
+  }
+
+  label{
+    display:block;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 7px;
+  }
+
+  .field{
+    margin-bottom: 16px;
+  }
+
+  .field:last-of-type{
+    margin-bottom: 0;
+  }
+
+  input[type="text"]{
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border-soft);
+    background: var(--field-bg);
+    font-size: 14px;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  input[type="text"]:focus{
+    border-color: var(--accent);
+    background: #ffffff;
+  }
+
+  input.input-error{
+    border-color: #e8a4b3;
+    background: #fdf1f3;
+  }
+
+  input.input-error:focus{
+    border-color: #d97b8d;
+  }
+
+  .error-msg{
+    margin: 6px 0 0;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #c2607a;
+    min-height: 14px;
+    display: none;
+  }
+
+  .error-msg.show{
+    display: block;
+  }
+
+  .btn-row{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  button{
+    width: 100%;
+    padding: 14px 0;
+    border-radius: 14px;
+    border: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease, background 0.15s ease;
+  }
+
+  button:active{ transform: scale(0.98); }
+
+  .btn-compute{
+    background: linear-gradient(135deg, var(--accent) 0%, var(--navy) 100%);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+  }
+  .btn-compute:hover{ filter: brightness(1.08); }
+
+  .btn-clear{
+    background: transparent;
+    color: var(--text-muted);
+    border: 1.5px solid var(--border-soft);
+  }
+  .btn-clear:hover{ background: var(--field-bg); }
+
+  .progress-wrap{
+    display: flex;
+    justify-content: center;
+    margin: 4px 0 20px;
+  }
+
+  .progress-ring{
+    transform: rotate(-90deg);
+  }
+
+  .progress-track{
+    fill: none;
+    stroke: var(--field-bg);
+    stroke-width: 10;
+  }
+
+  .progress-bar{
+    fill: none;
+    stroke: #d7dfef;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.6s ease, stroke 0.4s ease;
+  }
+
+  .progress-bar.status-fail{ stroke: #d9534f; }
+  .progress-bar.status-warn{ stroke: #c99a1e; }
+  .progress-bar.status-good{ stroke: #2ba36a; }
+
+  .progress-center{
+    position: relative;
+  }
+
+  .progress-label{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .progress-value{
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .progress-caption{
+    font-size: 9.5px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .result-row{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .result-row:last-child{
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .result-row span.value{
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .result-row.remark span.value{
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .result-row.remark span.value.status-fail{ color: #d9534f; }
+  .result-row.remark span.value.status-warn{ color: #c99a1e; }
+  .result-row.remark span.value.status-good{ color: #2ba36a; }
+
+  .placeholder{
+    color: #b7c3dc;
+    font-style: italic;
+    font-weight: 500 !important;
+  }
+
+  @media (max-width: 800px){
+    .cards-wrap{
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header-gradient">
+    <div class="crest">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3 L22 8 L12 13 L2 8 Z"/>
+        <path d="M6 10.5 V16 C6 17.5 8.5 19 12 19 C15.5 19 18 17.5 18 16 V10.5"/>
+        <path d="M22 8 V14"/>
+      </svg>
+    </div>
+    <p class="school-name">ARELLANO UNIVERSITY</p>
+    <p class="school-sub">STUDENT PORTAL SYSTEM</p>
+    <p class="dashboard-title">Grade Evaluator Dashboard</p>
+    <p class="dashboard-sub">Enter student details to compute the average and remark</p>
+  </div>
+
+  <div class="cards-wrap">
+
+    <div class="card">
+      <p class="card-title">
+        <span class="icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path>
+          </svg>
+        </span>
+        Student Information
+      </p>
+
+      <div class="field">
+        <label for="studentName">Student full name</label>
+        <input type="text" id="studentName" placeholder="Enter full name">
+        <p class="error-msg" id="errorName"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="card-title">
+        <span class="icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="3" width="14" height="18" rx="2"></rect>
+            <path d="M9 8h6M9 12h6M9 16h3"></path>
+          </svg>
+        </span>
+        Grades
+      </p>
+
+      <div class="field">
+        <label for="grade1">Grade 1 (first period)</label>
+        <input type="text" id="grade1" placeholder="0 - 100" inputmode="decimal">
+        <p class="error-msg" id="errorGrade1"></p>
+      </div>
+
+      <div class="field">
+        <label for="grade2">Grade 2 (second period)</label>
+        <input type="text" id="grade2" placeholder="0 - 100" inputmode="decimal">
+        <p class="error-msg" id="errorGrade2"></p>
+      </div>
+
+      <div class="field">
+        <label for="grade3">Grade 3 (third period)</label>
+        <input type="text" id="grade3" placeholder="0 - 100" inputmode="decimal">
+        <p class="error-msg" id="errorGrade3"></p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-compute" onclick="computeGrades()">Compute grades</button>
+        <button class="btn-clear" onclick="clearConsole()">Clear console</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="card-title">
+        <span class="icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20V10M12 20V4M20 20v-7"></path>
+          </svg>
+        </span>
+        Evaluation Results
+      </p>
+
+      <div class="progress-wrap">
+        <div class="progress-center">
+          <svg class="progress-ring" width="130" height="130" viewBox="0 0 130 130">
+            <circle class="progress-track" cx="65" cy="65" r="54"></circle>
+            <circle class="progress-bar" id="progressBar" cx="65" cy="65" r="54"
+              stroke-dasharray="0 339.3"></circle>
+          </svg>
+          <div class="progress-label">
+            <span class="progress-value placeholder" id="progressValue">—</span>
+            <span class="progress-caption">AVERAGE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-row">
+        <span>Name:</span>
+        <span class="value placeholder" id="resultName">—</span>
+      </div>
+      <div class="result-row remark">
+        <span>Remark:</span>
+        <span class="value placeholder" id="resultRemark">—</span>
+      </div>
+      <div class="result-row remark">
+        <span>Status:</span>
+        <span class="value placeholder" id="resultStatus">—</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const CIRCUMFERENCE = 2 * Math.PI * 54;
+
+function getRemark(avg){
+  if (avg >= 90) return { text: "Excellent", status: "Passed", cls: "status-good" };
+  if (avg >= 85) return { text: "Very Good", status: "Passed", cls: "status-good" };
+  if (avg >= 80) return { text: "Good", status: "Passed", cls: "status-warn" };
+  if (avg >= 75) return { text: "Passed", status: "Passed", cls: "status-warn" };
+  return { text: "Failed", status: "Failed", cls: "status-fail" };
+}
+
+const nameInput = document.getElementById('studentName');
+const gradeInputs = [
+  document.getElementById('grade1'),
+  document.getElementById('grade2'),
+  document.getElementById('grade3')
+];
+const errorName = document.getElementById('errorName');
+const errorGrades = [
+  document.getElementById('errorGrade1'),
+  document.getElementById('errorGrade2'),
+  document.getElementById('errorGrade3')
+];
+
+const NAME_PATTERN = /^[A-Za-z\u00C0-\u017F.'-]+(\s[A-Za-z\u00C0-\u017F.'-]+)*$/;
+const NUMBER_PATTERN = /^\d+(\.\d+)?$/;
+
+function setError(input, errorEl, message){
+  input.classList.add('input-error');
+  errorEl.textContent = message;
+  errorEl.classList.add('show');
+}
+
+function clearError(input, errorEl){
+  input.classList.remove('input-error');
+  errorEl.textContent = '';
+  errorEl.classList.remove('show');
+}
+
+function validateName(){
+  const raw = nameInput.value;
+  const name = raw.trim();
+
+  if (!name){
+    setError(nameInput, errorName, 'Please enter the student name.');
+    return null;
+  }
+  if (raw !== name){
+    setError(nameInput, errorName, 'Name should contain letters only: extra space at the start or end.');
+    return null;
+  }
+  if (/\s{2,}/.test(raw)){
+    setError(nameInput, errorName, 'Name should contain letters only: double space found.');
+    return null;
+  }
+  if (/\d/.test(name)){
+    setError(nameInput, errorName, 'Name should contain letters only: numbers found.');
+    return null;
+  }
+  if (/[^A-Za-z\u00C0-\u017F\s.'-]/.test(name)){
+    setError(nameInput, errorName, 'Name should contain letters only: symbols found.');
+    return null;
+  }
+  if (!NAME_PATTERN.test(name)){
+    setError(nameInput, errorName, 'Name should contain letters only: invalid format.');
+    return null;
+  }
+  clearError(nameInput, errorName);
+  return name;
+}
+
+function validateGrade(input, errorEl){
+  const original = input.value;
+  const raw = original.trim();
+
+  if (!raw){
+    setError(input, errorEl, 'Please enter a grade.');
+    return null;
+  }
+  if (/\s/.test(original)){
+    setError(input, errorEl, 'Numbers only: spaces found.');
+    return null;
+  }
+  if (/[A-Za-z]/.test(raw)){
+    setError(input, errorEl, 'Numbers only: letters found.');
+    return null;
+  }
+  if ((raw.match(/\./g) || []).length > 1){
+    setError(input, errorEl, 'Numbers only: multiple decimal points found.');
+    return null;
+  }
+  if (/[^0-9.]/.test(raw)){
+    setError(input, errorEl, 'Numbers only: symbols found.');
+    return null;
+  }
+  if (!NUMBER_PATTERN.test(raw)){
+    setError(input, errorEl, 'Numbers only: invalid format.');
+    return null;
+  }
+  const value = parseFloat(raw);
+  if (value < 0){
+    setError(input, errorEl, 'Must be between 0 and 100: value too low.');
+    return null;
+  }
+  if (value > 100){
+    setError(input, errorEl, 'Must be between 0 and 100: value too high.');
+    return null;
+  }
+  clearError(input, errorEl);
+  return value;
+}
+
+nameInput.addEventListener('input', () => clearError(nameInput, errorName));
+gradeInputs.forEach((input, i) => {
+  input.addEventListener('input', () => clearError(input, errorGrades[i]));
+});
+
+function computeGrades(){
+  const name = validateName();
+  const g1 = validateGrade(gradeInputs[0], errorGrades[0]);
+  const g2 = validateGrade(gradeInputs[1], errorGrades[1]);
+  const g3 = validateGrade(gradeInputs[2], errorGrades[2]);
+
+  if (name === null || g1 === null || g2 === null || g3 === null){
+    return;
+  }
+
+  const resultName = document.getElementById('resultName');
+  const resultRemark = document.getElementById('resultRemark');
+  const resultStatus = document.getElementById('resultStatus');
+  const progressValue = document.getElementById('progressValue');
+  const progressBar = document.getElementById('progressBar');
+
+  const average = (g1 + g2 + g3) / 3;
+  const remark = getRemark(average);
+  const fraction = Math.max(0, Math.min(1, average / 100));
+  const dashLength = fraction * CIRCUMFERENCE;
+
+  resultName.textContent = name;
+  resultName.classList.remove('placeholder');
+
+  progressValue.textContent = average.toFixed(1) + '%';
+  progressValue.classList.remove('placeholder');
+
+  resultRemark.textContent = remark.text;
+  resultRemark.classList.remove('placeholder');
+  resultRemark.classList.remove('status-fail', 'status-warn', 'status-good');
+  resultRemark.classList.add(remark.cls);
+
+  resultStatus.textContent = remark.status;
+  resultStatus.classList.remove('placeholder');
+  resultStatus.classList.remove('status-fail', 'status-warn', 'status-good');
+  resultStatus.classList.add(remark.cls);
+
+  progressBar.classList.remove('status-fail', 'status-warn', 'status-good');
+  progressBar.classList.add(remark.cls);
+  progressBar.setAttribute('stroke-dasharray', dashLength.toFixed(1) + ' ' + CIRCUMFERENCE.toFixed(1));
+}
+
+function clearConsole(){
+  nameInput.value = '';
+  gradeInputs.forEach(input => input.value = '');
+
+  clearError(nameInput, errorName);
+  gradeInputs.forEach((input, i) => clearError(input, errorGrades[i]));
+
+  const resultName = document.getElementById('resultName');
+  const resultRemark = document.getElementById('resultRemark');
+  const resultStatus = document.getElementById('resultStatus');
+  const progressValue = document.getElementById('progressValue');
+  const progressBar = document.getElementById('progressBar');
+
+  resultName.textContent = '—';
+  resultRemark.textContent = '—';
+  resultStatus.textContent = '—';
+  progressValue.textContent = '—';
+
+  resultName.classList.add('placeholder');
+  progressValue.classList.add('placeholder');
+
+  resultRemark.classList.add('placeholder');
+  resultRemark.classList.remove('status-fail', 'status-warn', 'status-good');
+
+  resultStatus.classList.add('placeholder');
+  resultStatus.classList.remove('status-fail', 'status-warn', 'status-good');
+
+  progressBar.classList.remove('status-fail', 'status-warn', 'status-good');
+  progressBar.setAttribute('stroke-dasharray', '0 ' + CIRCUMFERENCE.toFixed(1));
+}
+</script>
+
+</body>
+</html>
